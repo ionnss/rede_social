@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build: .
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=edsb_ions
+      - DB_PASSWORD=Edsb!61451916566145191656!edsb
+      - DB_NAME=edsb
+    command: ["/wait-for-it.sh", "db:5432", "-t", "30", "--", "./app_edsb"]
+    networks:
+      - edsb_network
+
+  db:
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: edsb_ions
+      POSTGRES_PASSWORD: Edsb!61451916566145191656!edsb
+      POSTGRES_DB: edsb  # Consistente com DB_NAME do app
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - edsb_network
+
+networks:
+  edsb_network:
+
+volumes:
+  db_data:
